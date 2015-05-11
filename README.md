@@ -1,9 +1,10 @@
 # Barcelona Graduate School of Economics
-## International Trade, Finance and Development
+### International Trade, Finance and Development
 
 This repository include some code (in Matlab, R and Stata) I have worked on during my master's program at BGSE.
 
-### Independent Study Project
+
+## Independent Study Project
 
 As part of the master's project we have to work in a small policy memo. We decided to study what would have happened to the GIIPS (Greece, Ireland, Italy, Portugal and Spain) if they had restructured their debt at different periods of the Financial Crisis.
 
