@@ -13,7 +13,7 @@ library(ggplot2)
 dataset <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/dataset.csv")
 
 # exclude the crisis years
-dataset <- dataset[which(dataset$year<= 2008),]
+# dataset <- dataset[which(dataset$year<= 2008),]
 # note: by excluding these years we loose significance power in the haircut (in the linear quadratic and cubic terms)
 
 
@@ -165,25 +165,182 @@ g2
 
 # Counterfactual for growth in t+0
 # Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
-gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt0r <- coeftest(gt0, vcov.=vcovHC(gt0))
 
 # Counterfactual for growth in t+1
-gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(pop) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(productivity) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fx) + lag(haircut * fx), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(pop) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(productivity) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fx) + lag(haircut * fx), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt1r <- coeftest(gt1, vcov.=vcovHC(gt1))
 
 # Counterfactual for growth in t+2
-gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(pop, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(productivity, k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fx, k = 2) + lag(haircut * fx, k = 2), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(pop, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(productivity, k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fx, k = 2) + lag(haircut * fx, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt2r <- coeftest(gt2, vcov.=vcovHC(gt2))
 
 # Counterfactual for growth in t+3
-gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(pop, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(productivity, k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fx, k = 3) + lag(haircut * fx, k = 3), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(pop, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(productivity, k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fx, k = 3) + lag(haircut * fx, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt3r <- coeftest(gt3, vcov.=vcovHC(gt3))
 
 # Counterfactual for growth in t+4
-gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
 
 
+gre <- dataset[which(dataset$country=="GRC"),]
+ire <- dataset[which(dataset$country=="IRL"),]
+ita <- dataset[which(dataset$country=="ITA"),]
+por <- dataset[which(dataset$country=="PRT"),]
+esp <- dataset[which(dataset$country=="ESP"),]
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# 2008
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# Greece
+year = 2008
+
+
+# This function will create the counterfactual graph for a given country and restructure year
+counterfactual <- function(country, year, dataset){
+  
+  # Counterfactual for growth in t+0
+  # Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+  gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt0r <- coeftest(gt0, vcov.=vcovHC(gt0))
+  
+  # Counterfactual for growth in t+1
+  gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(pop) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(productivity) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fx) + lag(haircut * fx), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt1r <- coeftest(gt1, vcov.=vcovHC(gt1))
+  
+  # Counterfactual for growth in t+2
+  gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(pop, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(productivity, k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fx, k = 2) + lag(haircut * fx, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt2r <- coeftest(gt2, vcov.=vcovHC(gt2))
+  
+  # Counterfactual for growth in t+3
+  gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(pop, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(productivity, k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fx, k = 3) + lag(haircut * fx, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt3r <- coeftest(gt3, vcov.=vcovHC(gt3))
+  
+  # Counterfactual for growth in t+4
+  gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
+  
+  results <- data.frame(years)
+  
+  # define some aux list
+  years <- c(year:(year+4))
+  haircuts <- seq(0, 1, by=.1)
+  
+  # loop through the five regressions
+  # predict the growth rate
+  # calculate the gdp
+  
+  for (i in 1:length(haircuts)){
+    print(i)
+    for (j in 1:(length(years))){
+      print (j)
+      # initialize the vectors to store growth and gdp
+      gs <- c()
+      gdp <- c(dataset$gdp[which(dataset$country==country & dataset$year == year)])
+  
+      # we need to calculate the FE for each period
+      # NOTE: I do not know how to do it "nicer"
+      if (j == 1){
+        # obtain the country FE
+        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
+        fes <- fixef(gt0, effect="individual")
+        fe[j] = as.numeric(fes[which(names(fes)==country)])
+        
+        gs[j] <- fe[j] + predict.cf(gt0r, country.data(country, year, dataset, haircuts[i]))
+        gdp[j+1] <- gdp[j]*(1+gs[j])
+      }
+      
+      if (j == 2){
+        # obtain the country FE
+        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
+        fes <- fixef(gt1, effect="individual")
+        fe[j] = as.numeric(fes[which(names(fes)==country)])
+        
+        gs[j] <- fe[j] + predict.cf(gt1r, country.data(country, year, dataset, haircuts[i]))
+        gdp[j+1] <- gdp[j]*(1+gs[j])
+      }
+      
+      if (j == 3){
+        # obtain the country FE
+        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
+        fes <- fixef(gt2, effect="individual")
+        fe[j] = as.numeric(fes[which(names(fes)==country)])
+        
+        gs[j] <- fe[j] + predict.cf(gt2r, country.data(country, year, dataset, haircuts[i]))
+        gdp[j+1] <- gdp[j]*(1+gs[j])
+      }
+      
+      if (j == 4){
+        # obtain the country FE
+        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
+        fes <- fixef(gt3, effect="individual")
+        fe[j] = as.numeric(fes[which(names(fes)==country)])
+        
+        gs[j] <- fe[j] + predict.cf(gt3r, country.data(country, year, dataset, haircuts[i]))
+        gdp[j+1] <- gdp[j]*(1+gs[j])
+      }
+      
+      if (j == 5){
+        # obtain the country FE
+        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
+        fes <- fixef(gt4, effect="individual")
+        fe[j] = as.numeric(fes[which(names(fes)==country)])
+        
+        gs[j] <- fe[j] + predict.cf(gt4r, country.data(country, year, dataset, haircuts[i]))
+        gdp[j+1] <- gdp[j]*(1+gs[j])
+      }
+    }
+    print(gdp)
+    results <- cbind(results, gdp)
+  }
+    return(result)
+}
+
+
+# I am using ALL coefs (including the not significant ones to do the predict)
+# WARNING: does not include the country fixed effects
+# NOTE: DECIDE WHETER TO INCLUDE ALL COEFFICIENTS OR ONLY SIGNIFICANT ONES
+predict.cf <- function(coefs, dataset){
+  g = 0
+  if(length(dataset) != length(coefs[,1])){
+    return("Coefficients and data not the same lenght")
+  }
+  else{
+    for (el in 1:length(coefs[,1])){
+      if(coefs[el,4]<0.1){
+        g = g + coefs[el] * dataset[el]
+      }
+    }
+  }
+  return(as.numeric(g))
+}
+
+
+country.data <- function(country, year, dataset, haircut){
+# the data MUST follow this order:
+# lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx
+
+  lag1.growth <- dataset$growth[which(dataset$country==country & dataset$year==year-1)]
+  lag2.growth <- dataset$growth[which(dataset$country==country & dataset$year==year-2)]
+  pop <- dataset$pop[which(dataset$country==country & dataset$year==year)]
+  hc <- dataset$hc[which(dataset$country==country & dataset$year==year)]
+  log.gdp <- log(dataset$gdp[which(dataset$country==country & dataset$year==year)])
+  log.capital <- log(dataset$capital[which(dataset$country==country & dataset$year==year)])
+  productivity <- dataset$productivity[which(dataset$country==country & dataset$year==year)]
+  cpi <- dataset$cpi[which(dataset$country==country & dataset$year==year)]
+  restructure <- dataset$restructure[which(dataset$country==country & dataset$year==year)]
+  haircut2 <- haircut^2
+  haircut3 <- haircut^3
+  debt <- dataset$debt[which(dataset$country==country & dataset$year==year)]
+  fx <- dataset$fx[which(dataset$country==country & dataset$year==year)]
+  fxhaircut <- haircut * fx
+  
+  dataset = data.frame(lag1.growth, lag2.growth, pop, hc, log.gdp, log.capital, productivity, cpi, restructure, haircut, haircut2, haircut3, debt, fx, fxhaircut)
+  return(dataset)
+}
 
 
