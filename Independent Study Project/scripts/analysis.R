@@ -291,8 +291,6 @@ for (i in 1:length(haircuts)){
     results <- cbind(results, gdp)
   }
   
-  ggplo
-  
   print(growths)
   return(results)
 }
