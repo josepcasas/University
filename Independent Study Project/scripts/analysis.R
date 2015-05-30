@@ -2,7 +2,7 @@
 # Initialize
 #------------------------------------------------------------------------------------------------------------------------------------------
 rm(list=ls())
-setwd("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/results/")
+setwd("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/results/")
 library(plm)
 library(stargazer)
 library(sandwich)
@@ -10,7 +10,7 @@ library(lmtest)
 library(ggplot2)
 
 # Load the dataset
-dataset <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/dataset.csv")
+dataset <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/dataset.csv")
 
 # exclude the crisis years
 # dataset <- dataset[which(dataset$year<= 2008),]
@@ -220,6 +220,7 @@ counterfactual <- function(country, year, dataset){
   gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
   
+  growths <- data.frame(years[-1])
   results <- data.frame(years)
   
   # define some aux list
@@ -229,15 +230,15 @@ counterfactual <- function(country, year, dataset){
   # loop through the five regressions
   # predict the growth rate
   # calculate the gdp
-  
-  for (i in 1:length(haircuts)){
-    print(i)
+  # 1:length(haircuts
+for (i in 1:length(haircuts)){
+  gs <- c()
+  gdp <- c(dataset$gdp[which(dataset$country==country & dataset$year == year)])
+  fe <- c()
     for (j in 1:(length(years))){
       print (j)
       # initialize the vectors to store growth and gdp
-      gs <- c()
-      gdp <- c(dataset$gdp[which(dataset$country==country & dataset$year == year)])
-      fe <- c()
+
   
       # we need to calculate the FE for each period
       # NOTE: I do not know how to do it "nicer"
@@ -257,13 +258,13 @@ counterfactual <- function(country, year, dataset){
 
         gs[j] <- fe[j] + predict.cf(gt1r, country.data(country, year, dataset, haircuts[i]))
         gdp[j+1] <- gdp[j]*(1+gs[j])
-      }
+        }
       
       if (j == 3){
         # obtain the country FE
         fes <- fixef(gt2, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
-        
+
         gs[j] <- fe[j] + predict.cf(gt2r, country.data(country, year, dataset, haircuts[i]))
         gdp[j+1] <- gdp[j]*(1+gs[j])
       }
@@ -272,7 +273,7 @@ counterfactual <- function(country, year, dataset){
         # obtain the country FE
         fes <- fixef(gt3, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
-        
+
         gs[j] <- fe[j] + predict.cf(gt3r, country.data(country, year, dataset, haircuts[i]))
         gdp[j+1] <- gdp[j]*(1+gs[j])
       }
@@ -281,15 +282,19 @@ counterfactual <- function(country, year, dataset){
         # obtain the country FE
         fes <- fixef(gt4, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
-        
+
         gs[j] <- fe[j] + predict.cf(gt4r, country.data(country, year, dataset, haircuts[i]))
         gdp[j+1] <- gdp[j]*(1+gs[j])
       }
     }
-    print(gs)
+    growths <- cbind(growths, gs)
     results <- cbind(results, gdp)
   }
-    return(results)
+  
+  ggplo
+  
+  print(growths)
+  return(results)
 }
 
 
@@ -303,7 +308,7 @@ predict.cf <- function(coefs, dataset){
   }
   else{
     for (el in 1:length(coefs[,1])){
-      if(coefs[el,4]<0.1){
+      if(coefs[el,4]<1){
         g = g + coefs[el] * dataset[el]
       }
     }
@@ -324,7 +329,13 @@ country.data <- function(country, year, dataset, haircut){
   log.capital <- log(dataset$capital[which(dataset$country==country & dataset$year==year)])
   productivity <- dataset$productivity[which(dataset$country==country & dataset$year==year)]
   cpi <- dataset$cpi[which(dataset$country==country & dataset$year==year)]
-  restructure <- dataset$restructure[which(dataset$country==country & dataset$year==year)]
+  if (haircut != 0){
+    restructure <- c(1)
+  }
+  else{
+    restructure <- c(0)
+  }
+  
   haircut2 <- haircut^2
   haircut3 <- haircut^3
   debt <- dataset$debt[which(dataset$country==country & dataset$year==year)]
