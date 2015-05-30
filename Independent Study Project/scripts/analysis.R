@@ -184,24 +184,20 @@ gt3r <- coeftest(gt3, vcov.=vcovHC(gt3))
 gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
 
-
 gre <- dataset[which(dataset$country=="GRC"),]
 ire <- dataset[which(dataset$country=="IRL"),]
 ita <- dataset[which(dataset$country=="ITA"),]
 por <- dataset[which(dataset$country=="PRT"),]
 esp <- dataset[which(dataset$country=="ESP"),]
 
-
 #------------------------------------------------------------------------------------------------------------------------------------------
-# 2008
+# Counterfactual functions
 #------------------------------------------------------------------------------------------------------------------------------------------
-
-# Greece
-year = 2008
-
 
 # This function will create the counterfactual graph for a given country and restructure year
 counterfactual <- function(country, year, dataset){
+  
+  
   
   # Counterfactual for growth in t+0
   # Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
@@ -227,7 +223,7 @@ counterfactual <- function(country, year, dataset){
   results <- data.frame(years)
   
   # define some aux list
-  years <- c(year:(year+4))
+  years <- c(year:(year+5))
   haircuts <- seq(0, 1, by=.1)
   
   # loop through the five regressions
@@ -241,12 +237,12 @@ counterfactual <- function(country, year, dataset){
       # initialize the vectors to store growth and gdp
       gs <- c()
       gdp <- c(dataset$gdp[which(dataset$country==country & dataset$year == year)])
+      fe <- c()
   
       # we need to calculate the FE for each period
       # NOTE: I do not know how to do it "nicer"
       if (j == 1){
         # obtain the country FE
-        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
         fes <- fixef(gt0, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
         
@@ -256,17 +252,15 @@ counterfactual <- function(country, year, dataset){
       
       if (j == 2){
         # obtain the country FE
-        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
         fes <- fixef(gt1, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
-        
+
         gs[j] <- fe[j] + predict.cf(gt1r, country.data(country, year, dataset, haircuts[i]))
         gdp[j+1] <- gdp[j]*(1+gs[j])
       }
       
       if (j == 3){
         # obtain the country FE
-        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
         fes <- fixef(gt2, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
         
@@ -276,7 +270,6 @@ counterfactual <- function(country, year, dataset){
       
       if (j == 4){
         # obtain the country FE
-        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
         fes <- fixef(gt3, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
         
@@ -286,7 +279,6 @@ counterfactual <- function(country, year, dataset){
       
       if (j == 5){
         # obtain the country FE
-        code <- dataset$code.v2[which(dataset$country==country & dataset$year == year)]
         fes <- fixef(gt4, effect="individual")
         fe[j] = as.numeric(fes[which(names(fes)==country)])
         
@@ -294,10 +286,10 @@ counterfactual <- function(country, year, dataset){
         gdp[j+1] <- gdp[j]*(1+gs[j])
       }
     }
-    print(gdp)
+    print(gs)
     results <- cbind(results, gdp)
   }
-    return(result)
+    return(results)
 }
 
 
