@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/")
+setwd("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/")
 library(lubridate) # for the year function
 library(plyr)
 library(plm)
@@ -33,12 +33,12 @@ countryGrowth <- function(vector){
 # PWT 8.1
 
 # Due to PWT8.1 limitation it is not possible to export all the data in one file
-africa <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/africa.csv")
-asia <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/asia.csv")
-europe <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/europe.csv")
-northamerica <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/northamerica.csv")
-oceania <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/oceania.csv")
-southamerica <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/southamerica.csv")
+africa <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/africa.csv")
+asia <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/asia.csv")
+europe <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/europe.csv")
+northamerica <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/northamerica.csv")
+oceania <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/oceania.csv")
+southamerica <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/southamerica.csv")
 
 #concatenate all the data into one data frame
 pwt <- rbind(africa, asia, europe, northamerica, oceania, southamerica)
@@ -86,7 +86,7 @@ dataset$growth <- growth
 # Reinhart and Trebesh, Haircut Dataset
 
 # import the Reinhart and Trebesch database (many variables)
-haircuts <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/haircut-v2.csv")
+haircuts <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/haircut-v2.csv")
 
 # select only country code, date and haircut from the original haircut database
 haircuts <- data.frame(haircuts$Code, haircuts$Date, haircuts$Preferred.Haircut.HSZ)
@@ -113,7 +113,7 @@ dataset$restructure <- ifelse(is.na(dataset$haircut), rep(0, length(dataset$hair
 
 
 # imf uses number codes for countries. This file contains the dictionary for the number codes
-codes <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/codes.csv")
+codes <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/codes.csv")
 
 # map the imf codes to the iso contry codes
 dataset$code <- mapvalues(dataset$country, from = codes$ISO3A, to = codes$IMF3N)
@@ -125,7 +125,7 @@ dataset$code <- mapvalues(dataset$country, from = codes$ISO3A, to = codes$IMF3N)
 # Debt levels (from IMF)
 
 # imports the IMF dataset. The data has year in columns and countries in rows
-debt <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/debt.csv")
+debt <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/debt.csv")
 
 # transpose the dataframe
 debt <- as.data.frame(t(debt))
@@ -162,19 +162,19 @@ dataset <- merge(dataset, debt.v2, by=c("code", "year"), all = TRUE)
 
   
 # import the reinhart and roggoff fx dataset. Use the coarse column
-fx <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/fx.csv")
+fxregime <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/fx.csv")
 
-names(fx) <- c("country.name", "code", "year", "fx", "fine")
+names(fxregime) <- c("country.name", "code", "year", "fxregime", "fine")
 
-fx <- fx[which(fx$year>=1950),1:4]
+fxregime <- fxregime[which(fxregime$year>=1950),1:4]
 
-dataset <- merge(dataset, fx, by=c("code", "year"), all= TRUE)
+dataset <- merge(dataset, fxregime, by=c("code", "year"), all= TRUE)
 
 
 #--------------------------------------------------------------------------------------
 # Inflation data
 
-cpi <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Indepent Study Project/data/inflation.csv")
+cpi <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Study Project/data/inflation.csv")
 
 cpi <- t(cpi)
 
@@ -202,18 +202,49 @@ dataset <- merge(dataset, cpi.v2, by=c("country", "year"), all=TRUE)
 
 #--------------------------------------------------------------------------------------
 # Extra (events + alternatives population)
+# Some extra variables added.
+# Includes: banking crisis, default total, populatiom, workshare1, workshare2
+extra <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/extra.csv")
+extra <- extra[,c(1, 5, 10, 12, 14, 15, 17, 18)]
+names(extra) <- c("country", "year","restructure2", "haircut2", "bankcrisis", "default", "workshare1", "workshare2")
+
+dataset <- merge(dataset, extra, by=c("country", "year"), all=TRUE)
 
 
 
 
+#--------------------------------------------------------------------------------------
+# Insititutional Qality 
 
+institutions <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/institutions.csv")
+institutions <- institutions[, c(3,5,10,11)]
+names(institutions) <- c("country", "year", "institutions1", "institutions2")
+dataset <- merge(dataset, institutions, by=c("country", "year"), all=TRUE)
+
+
+#--------------------------------------------------------------------------------------
+# FX rate
+
+fxrate <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/fxrate.csv")
+names(fxrate) <- c("variable", "country", "year", "fxrate")
+fxrate <- fxrate[,2:4]
+dataset <- merge(dataset, fxrate, by=c("country", "year"), all = TRUE)
+
+
+#--------------------------------------------------------------------------------------
+# Income groups
+groups <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/groups.csv")
+groups <- groups[,c(1,2,6)]
+names(groups)<-c("country", "group", "year")
+dataset <- merge(dataset, groups, by=c("country", "year"), all = TRUE)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Cleanup
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # reorder columns
-dataset <- dataset[c("country.name", "country", "code", "year", "date", "pop", "hc", "gdp", "capital", "productivity", "growth","restructure", "haircut", "debt", "fx", "cpi")]
+dataset <- dataset[c("country.name", "country", "code", "year", "date", "group", "pop", "hc", "gdp", "capital", "productivity", "growth","restructure", "haircut", "debt", "fxregime", "fxrate", "cpi", "restructure2", "haircut2", "bankcrisis", "default", "workshare1", "workshare2", "institutions1", "institutions2")]
+
 
 # limit observations to years >= 1970
 dataset <- dataset[which(dataset$year>=1970),]
@@ -249,6 +280,8 @@ dataset$haircut[is.na(dataset$haircut)] <- 0
 dataset<- dataset[which(dataset$code != "MAC" | dataset$code!="BMU"),]
 
 dataset$code.v2 <- as.numeric(dataset$code)
+
+
 
 
 

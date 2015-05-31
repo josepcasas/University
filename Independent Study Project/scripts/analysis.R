@@ -45,95 +45,208 @@ dataset <- read.csv("/Users/josepcasas/Documents/bgse/bgse-code/Independent Stud
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# FE Regression
-#------------------------------------------------------------------------------------------------------------------------------------------
-
-
-# Standard Growth Regression (FE)
-growth1 <- plm(growth ~ as.factor(code.v2) + pop + hc + log(gdp) + log(capital) + productivity + cpi, data = dataset, index=c("code.v2", "year"),  model="within")
-growth1r <- coeftest(growth1, vcov.=vcovHC(growth1))
-
-# Standard Growth Regression (FE)
-growth2 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure, data = dataset, index=c("code.v2", "year"),  model="within")
-growth2r <- coeftest(growth2, vcov.=vcovHC(growth2))
-
-# Standard Growth Regression + Haircut (FE)
-growth3 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut, data=dataset, index=c("code.v2", "year"),  model="within")
-growth3r <- coeftest(growth3, vcov.=vcovHC(growth3))
-
-# Standard Growth Regression + Haircut + Haircut^2 (FE)
-growth4 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2), data=dataset, index=c("code.v2", "year"),  model="within")
-growth4r <- coeftest(growth4, vcov.=vcovHC(growth4))
-
-# Standard Growth Regression + Haircut + Haircut^2 + Haircut^3 (FE)
-growth5 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3), data=dataset, index=c("code.v2", "year"),  model="within")
-growth5r <- coeftest(growth5, vcov.=vcovHC(growth5))
-
-# Standard Growth Regression + Haircut + Haircut^2 + Haircut^3 + debt (FE)
-growth6 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt, data=dataset, index=c("code.v2", "year"),  model="within")
-growth6r <- coeftest(growth6, vcov.=vcovHC(growth6))
-
-# Standard Growth Regression + Haircut + Haircut^2 + Haircut^3  + debt + fx (FE)
-growth7 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx, data=dataset, index=c("code.v2", "year"),  model="within")
-growth7r <- coeftest(growth7, vcov.=vcovHC(growth7))
-
-# Same as 7 but pooled
-growth8 <- plm(growth ~ pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx, data=dataset, index=c("code.v2", "year"),  model="pooling")
-growth8r <- coeftest(growth8, vcov.=vcovHC(growth8))
-
-stargazer(growth1, growth2, growth3, growth4, growth5, growth6, growth7, growth8, title="Results", align=TRUE)
-stargazer(growth1r, growth2r, growth3r, growth4r, growth5r, growth6r, growth7, growth8r, title="Results", align=TRUE)
-
-
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Dynamic + FE Regression
 #------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
 # Growth Regression (FE + 2 lag dynamic)
-dyn1 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi, data = dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn1 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi, data = dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn1r <- coeftest(dyn1, vcov.=vcovHC(dyn1))
 
 # Growth Regression + restructure (FE + 2 lag dynamic) 
-dyn2 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure , data = dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn2 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure , data = dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn2r <- coeftest(dyn2, vcov.=vcovHC(dyn2))
 
 # Standard Growth Regression + Haircut (FE + 2 lag dynamic) 
-dyn3 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn3 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn3r <- coeftest(dyn3, vcov.=vcovHC(dyn3))
 
 # Standard Growth Regression + Haircut + haircut^2 (FE + 2 lag dynamic) 
-dyn4 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn4 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn4r <- coeftest(dyn4, vcov.=vcovHC(dyn4))
 
 # Standard Growth Regression + Haircut + haircut^2 + haircut^3 (FE + 2 lag dynamic) 
-dyn5 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn5 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn5r <- coeftest(dyn5, vcov.=vcovHC(dyn5))
 
 # Standard Growth Regression + Haircut + haircut^2 + haircut^3 + debt (FE + 2 lag dynamic) 
-dyn6 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn6 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn6r <- coeftest(dyn6, vcov.=vcovHC(dyn6))
 
 # Standard Growth Regression + Haircut + haircut^2 + haircut^3 + debt + fx (FE + 2 lag dynamic) 
-dyn7 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn7 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 dyn7r <- coeftest(dyn7, vcov.=vcovHC(dyn7))
 
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn8 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn8r <- coeftest(dyn8, vcov.=vcovHC(dyn8))
+dyn8r
+
+dyn9 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn9r <- coeftest(dyn9, vcov.=vcovHC(dyn9))
+dyn9r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn10 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn10r <- coeftest(dyn10, vcov.=vcovHC(dyn10))
+dyn10r
+
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn11 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime + productivity, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn11r <- coeftest(dyn11, vcov.=vcovHC(dyn11))
+dyn11r
+
+
+stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, dyn9r, dyn10r, dyn11r, title="Dynamic + FE Results", align=TRUE, type = "text")
+
 #------------------------------------------------------------------------------------------------------------------------------------------
-# Prefered Specification
+# Alternatives specifications
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# Equivalent variables
+# default ~ restructure ~ restructure2
+# haircut ~ haircut2
+# pop ~ workshare1 ~ workshare2
+# institutions1 ~ institutions2
+
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn12 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn12r <- coeftest(dyn12, vcov.=vcovHC(dyn12))
+dyn12r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn13 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure2 + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn13r <- coeftest(dyn13, vcov.=vcovHC(dyn13))
+dyn13r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn14 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + default + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn14r <- coeftest(dyn14, vcov.=vcovHC(dyn14))
+dyn14r
+
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
-dyn8 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
-dyn8r <- coeftest(dyn8, vcov.=vcovHC(dyn8))
+dyn15 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn15r <- coeftest(dyn15, vcov.=vcovHC(dyn15))
+dyn15r
 
-stargazer(dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7, dyn8, title="Dynamic + FE Results", align=TRUE)
-stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, title="Dynamic + FE Results", align=TRUE)
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn16 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut2 + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn16r <- coeftest(dyn16, vcov.=vcovHC(dyn16))
+dyn16r
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn17 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn17r <- coeftest(dyn17, vcov.=vcovHC(dyn17))
+dyn17r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn18 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare2 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn18r <- coeftest(dyn18, vcov.=vcovHC(dyn18))
+dyn18r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn19 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn19r <- coeftest(dyn19, vcov.=vcovHC(dyn19))
+dyn19r
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn20 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions1 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn20r <- coeftest(dyn20, vcov.=vcovHC(dyn20))
+dyn20r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn21 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions2 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn21r <- coeftest(dyn21, vcov.=vcovHC(dyn21))
+dyn21r
+
+# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
+dyn22 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions2 + haircut * fxregime + productivity, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+dyn22r <- coeftest(dyn22, vcov.=vcovHC(dyn22))
+dyn22r
+
+stargazer(dyn11r, dyn12r, dyn13r, dyn14r, dyn15r, dyn17r, dyn18r, dyn19r, dyn20r, dyn21r, dyn22r, title="Dynamic + FE Results", align=TRUE, type = "text")
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Final Specification buildup
+#------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+
+final1 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final1r <- coeftest(final1, vcov.=vcovHC(final1))
+final1r
+
+final2 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final2r <- coeftest(final2, vcov.=vcovHC(final2))
+final2r
+
+final3 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final3r <- coeftest(final3, vcov.=vcovHC(final3))
+final3r
+
+final4 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final4r <- coeftest(final4, vcov.=vcovHC(final4))
+final4r
+
+final4b <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3), data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final4br <- coeftest(final4b, vcov.=vcovHC(final4b))
+final4br
+
+final5 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final5r <- coeftest(final5, vcov.=vcovHC(final5))
+final5r
+
+final6 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final6r <- coeftest(final6, vcov.=vcovHC(final6))
+final6r
+
+final7 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final7r <- coeftest(final7, vcov.=vcovHC(final7))
+final7r
+
+final8 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final8r <- coeftest(final8, vcov.=vcovHC(final8))
+final8r
+
+final8b <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + bankcrisis, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final8br <- coeftest(final8b, vcov.=vcovHC(final8b))
+final8br
+
+final8c <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + bankcrisis + default, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final8cr <- coeftest(final8c, vcov.=vcovHC(final8c))
+final8cr
+
+final9 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + bankcrisis + default + institutions2, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final9r <- coeftest(final9, vcov.=vcovHC(final9))
+final9r
+
+final10 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + bankcrisis + default + institutions2 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final10r <- coeftest(final10, vcov.=vcovHC(final10))
+final10r
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# FINAL LATEX OUTPUT
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+stargazer(final1, final2, final3, final4, final4b, final5, final6, final7, final8, final9, final10, title="Dynamic + FE Results", align=TRUE, type="text")
+stargazer(final1r, final2r, final3r, final4r, final4br, final5r, final6r, final7r, final8r, final8br, final8cr, final9r, final10r, title="Dynamic + FE Results", align=TRUE, type="text")
+
+
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
-# Optimization graphs
+# HAIRCUT NON-LINEARITIES
 #------------------------------------------------------------------------------------------------------------------------------------------
 # We want to find the optimal haircut size (i.e. the haircut that leads to the higher growth rate). We will (force) fit a quadratic 
 # polinomyal even if the cubic term is also significant. This happens because of a few outliers in the higher end of the haircuts.
@@ -141,49 +254,57 @@ stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, title="Dynamic
 # UPDATE: It turns out that we need the cubic term for haircut to be significant. I believe this is because the nature of the relationship
 # between haircut and growth is cubic and therefore when we try to fit a quadratic model it becomes insignificant. But I might be wrong.
 
-# Graph (including quadratic and cubic fit) of growth over haircut for all restructure events
-g1 <- ggplot(dataset[which(dataset$restructure==1),], aes(haircut, growth, label=country) ) + geom_point()  + geom_text(hjust=1, vjust=1)
-g1 <- g1 + stat_smooth(method = "lm", formula = y ~ poly(x, 2), size = 1)
-g1 <- g1 + stat_smooth(method = "lm", formula = y ~ poly(x, 3), size = 1, color = "red") # + theme_fivethirtyeight()
-g1
-
-
-# Graph (including quadratic and cubic fit) of growth over haircut for rich (above average gdp) restructure events
-g2 <- ggplot(dataset[which(dataset$restructure==1 & dataset$gdp > mean(dataset$gdp)),], aes(haircut, growth, label=country) ) + geom_point()  + geom_text(hjust=1, vjust=1)
-g2 <- g2 + stat_smooth(method = "lm", formula = y ~ poly(x, 2), size = 1)
-g2 <- g2 + stat_smooth(method = "lm", formula = y ~ poly(x, 3), size = 1, color = "red") # + theme_fivethirtyeight()
-g2
-
 # NOTE: We find a very clear quadratic shape when we restric the sample to high income countries (i.e. all those above the average gdp). 
 # I do not know how to argue this results given the cubic nature of the regression (which we control for GDP levels). 
+
+# UPDATE v2: We have finally found an regression specification that fits a qudratic model, we have included some new controls, including
+# institution quality that are accounting for that tail at the end (i.e. they are countries with low institutional quality)
+
+hnl1 <- ggplot(data = dataset[which(dataset$restructure==1),], aes(haircut, growth, label = country)) 
+hnl1 <- hnl1 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2),  aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+hnl1 <- hnl1 + scale_size(range = c(3, 13))
+hnl1 <- hnl1 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+hnl1 <- hnl1 + scale_fill_manual(name="Polynomial Fit", label = c("Quadratic Polynomial", "Cubic Polynomial"), values = c("#FF9999", "#56B4E9"))
+#hnl1 <- hnl1 + scale_size_manual(name="Real GDP", labels = c("tiny economy (~3"))
+hnl1
+ggsave(file="haircut-growth-nonlinearities.png", plot = hnl1, width = 40, height = 20, units = "cm", dpi = 500)
+
+
+
+hnl2 <- ggplot(data = dataset[which(dataset$restructure==1 & dataset$gdp > 250000),], aes(haircut, growth, label = country))
+hnl2 <- hnl2 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2), aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+hnl2 <- hnl2 + scale_size(range = c(3, 13))
+hnl2
+ggsave(file="haircut-growth-nonlinearities-highGDP.png", plot = hnl2, width = 40, height = 20, units = "cm", dpi = 500)
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Counterfactuals
 #------------------------------------------------------------------------------------------------------------------------------------------
-
-# Counterfactual Regressions
-
 # Counterfactual for growth in t+0
-# Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
-gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions2 + haircut * fxregime, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt0r <- coeftest(gt0, vcov.=vcovHC(gt0))
 
 # Counterfactual for growth in t+1
-gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(pop) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(productivity) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fx) + lag(haircut * fx), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(workshare1) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fxregime) + lag(fxrate) + lag(institutions2) + lag(haircut * fxregime), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt1r <- coeftest(gt1, vcov.=vcovHC(gt1))
 
 # Counterfactual for growth in t+2
-gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(pop, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(productivity, k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fx, k = 2) + lag(haircut * fx, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(workshare1, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fxregime, k = 2) + lag(fxrate, k = 2) + lag(institutions2, k = 2) + lag(haircut * fxregime, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt2r <- coeftest(gt2, vcov.=vcovHC(gt2))
 
 # Counterfactual for growth in t+3
-gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(pop, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(productivity, k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fx, k = 3) + lag(haircut * fx, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(workshare1, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fxregime, k = 3) + lag(fxrate, k = 3) + lag(institutions2, k = 3) + lag(haircut * fxregime, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt3r <- coeftest(gt3, vcov.=vcovHC(gt3))
 
 # Counterfactual for growth in t+4
-gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(workshare1, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fxregime, k = 4) + lag(fxrate, k = 4) + lag(institutions2, k = 4) + lag(haircut * fxregime, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
 gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
+
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,9 +331,9 @@ plot.counterfactual <- function(dataset, country, year){
   
   p <- ggplot()
   for (i in 1:length(fxs)){
-    p <- p + geom_ribbon(data = gdp[which(gdp$fx == fxs[i]),], aes(show_guide = TRUE, x=year, ymin=min2, ymax=max2, fill = as.factor(fx)), linetype = 2,  alpha = 0.2)
-    p <- p + geom_line(data = gdp[which(gdp$fx == fxs[i]),], aes(x = year, y=gdp2, group=haircut, colour = haircut))
-    p <- p + geom_ribbon(data = gdp[which(gdp$fx == fxs[i]),], aes(show_guide = FALSE, x=year, ymin=min2, ymax=max2), color=colours[i], linetype = 2,  alpha = 0)
+    p <- p + geom_ribbon(data = gdp[which(gdp$fxregime == fxs[i]),], aes(show_guide = TRUE, x=year, ymin=min2, ymax=max2, fill = as.factor(fxregime)), linetype = 2,  alpha = 0.2)
+    p <- p + geom_line(data = gdp[which(gdp$fxregime == fxs[i]),], aes(x = year, y=gdp2, group=haircut, colour = haircut))
+    p <- p + geom_ribbon(data = gdp[which(gdp$fxregime == fxs[i]),], aes(show_guide = FALSE, x=year, ymin=min2, ymax=max2), color=colours[i], linetype = 2,  alpha = 0)
     p <- p + geom_line(data = country.gdp, aes(x = year, y = gdp2), size = 1.5, colour = "gray40")
     p <- p + geom_vline(aes(xintercept = year), linetype = 2, colour = "red", size = 1)
     p <- p + labs(title = paste (country, "counterfactual for restructure in", year, sep = " ", collapse = NULL), y = "Normalized Real GDP", x = "Year")
@@ -232,29 +353,29 @@ plot.counterfactual <- function(dataset, country, year){
 counterfactual <- function(country, year, dataset){
   
   # Counterfactual for growth in t+0
-  # Standard Growth Regression + restructure + haircut + haircut2 + haircut3 + debt + fx (FE + Arellano)
-  gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt0 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions2 + haircut * fxregime, data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt0r <- coeftest(gt0, vcov.=vcovHC(gt0))
   
   # Counterfactual for growth in t+1
-  gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(pop) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(productivity) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fx) + lag(haircut * fx), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt1 <- plm(growth ~ lag(growth, k = 2) + lag(growth, k=3) + lag(workshare1) + lag(hc) + lag(log(gdp)) + lag(log(capital)) + lag(cpi) + lag(restructure) + lag(haircut) + lag(I(haircut^2)) + lag(I(haircut^3)) + lag(debt) + lag(fxregime) + lag(fxrate) + lag(institutions2) + lag(haircut * fxregime), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt1r <- coeftest(gt1, vcov.=vcovHC(gt1))
   
   # Counterfactual for growth in t+2
-  gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(pop, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(productivity, k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fx, k = 2) + lag(haircut * fx, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt2 <- plm(growth ~ lag(growth, k = 3) + lag(growth, k=4) + lag(workshare1, k = 2) + lag(hc, k = 2) + lag(log(gdp), k = 2) + lag(log(capital), k = 2) + lag(cpi, k = 2) + lag(restructure, k = 2) + lag(haircut, k = 2) + lag(I(haircut^2), k = 2) + lag(I(haircut^3), k = 2) + lag(debt, k = 2) + lag(fxregime, k = 2) + lag(fxrate, k = 2) + lag(institutions2, k = 2) + lag(haircut * fxregime, k = 2), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt2r <- coeftest(gt2, vcov.=vcovHC(gt2))
   
   # Counterfactual for growth in t+3
-  gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(pop, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(productivity, k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fx, k = 3) + lag(haircut * fx, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt3 <- plm(growth ~ lag(growth, k = 4) + lag(growth, k=5) + lag(workshare1, k = 3) + lag(hc, k = 3) + lag(log(gdp), k = 3) + lag(log(capital), k = 3) + lag(cpi, k = 3) + lag(restructure, k = 3) + lag(haircut, k = 3) + lag(I(haircut^2), k = 3) + lag(I(haircut^3), k = 3) + lag(debt, k = 3) + lag(fxregime, k = 3) + lag(fxrate, k = 3) + lag(institutions2, k = 3) + lag(haircut * fxregime, k = 3), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt3r <- coeftest(gt3, vcov.=vcovHC(gt3))
   
   # Counterfactual for growth in t+4
-  gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(pop, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(productivity, k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fx, k = 4) + lag(haircut * fx, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
+  gt4 <- plm(growth ~ lag(growth, k = 5) + lag(growth, k=6) + lag(workshare1, k = 4) + lag(hc, k = 4) + lag(log(gdp), k = 4) + lag(log(capital), k = 4) + lag(cpi, k = 4) + lag(restructure, k = 4) + lag(haircut, k = 4) + lag(I(haircut^2), k = 4) + lag(I(haircut^3), k = 4) + lag(debt, k = 4) + lag(fxregime, k = 4) + lag(fxrate, k = 4) + lag(institutions2, k = 4) + lag(haircut * fxregime, k = 4), data=dataset, index=c("country", "year"),  model="within", methods="arellano")
   gt4r <- coeftest(gt4, vcov.=vcovHC(gt4))
+  
   
   growths <- data.frame(years[-1])
   results <- data.frame(c(0), c(0), c(0), c(0), c(0), c(0))
-  names(results) <- c("year", "haircut", "fx", "gdp", "min", "max")
+  names(results) <- c("year", "haircut", "fxregime", "gdp", "min", "max")
 
   
   # define some aux list
@@ -326,7 +447,7 @@ counterfactual <- function(country, year, dataset){
        }
       
       newResults <- data.frame(years, rep(haircuts[i], length(years)), rep(fxs[k], length(years)), gdp, 0, 0)
-      names(newResults) <- c("year", "haircut", "fx", "gdp", "min", "max")
+      names(newResults) <- c("year", "haircut", "fxregime", "gdp", "min", "max")
       results <- rbind(results, newResults)
       print(length(results[,1]))
     }
@@ -335,8 +456,8 @@ counterfactual <- function(country, year, dataset){
   
   for (k in 1:length(fxs)){
     for (j in 1:(length(years))){
-      results$max[which(results$fx == fxs[k] & results$year == years[j])] <- rep(max(results$gdp[which(results$fx == fxs[k] & results$year == years[j])]), length(results$max[which(results$fx == fxs[k] & results$year == years[j])]))
-      results$min[which(results$fx == fxs[k] & results$year == years[j])] <- rep(min(results$gdp[which(results$fx == fxs[k] & results$year == years[j])]), length(results$max[which(results$fx == fxs[k] & results$year == years[j])]))
+      results$max[which(results$fxregime == fxs[k] & results$year == years[j])] <- rep(max(results$gdp[which(results$fxregime == fxs[k] & results$year == years[j])]), length(results$max[which(results$fxregime == fxs[k] & results$year == years[j])]))
+      results$min[which(results$fxregime == fxs[k] & results$year == years[j])] <- rep(min(results$gdp[which(results$fxregime == fxs[k] & results$year == years[j])]), length(results$max[which(results$fxregime == fxs[k] & results$year == years[j])]))
     }
   }
 
@@ -370,17 +491,16 @@ predict.cf <- function(coefs, dataset){
 }
 
 
-country.data <- function(country, year, dataset, haircut, fx){
+country.data <- function(country, year, dataset, haircut, fxregime){
 # the data MUST follow this order:
-# lag(growth) + lag(growth, k=2) + pop + hc + log(gdp) + log(capital) + productivity + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fx + haircut * fx
-
+# lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + institutions2 + haircut * fx
+  
   lag1.growth <- dataset$growth[which(dataset$country==country & dataset$year==year-1)]
   lag2.growth <- dataset$growth[which(dataset$country==country & dataset$year==year-2)]
-  pop <- dataset$pop[which(dataset$country==country & dataset$year==year)]
+  workshare <- dataset$workshare1[which(dataset$country==country & dataset$year==year)]
   hc <- dataset$hc[which(dataset$country==country & dataset$year==year)]
   log.gdp <- log(dataset$gdp[which(dataset$country==country & dataset$year==year)])
   log.capital <- log(dataset$capital[which(dataset$country==country & dataset$year==year)])
-  productivity <- dataset$productivity[which(dataset$country==country & dataset$year==year)]
   cpi <- dataset$cpi[which(dataset$country==country & dataset$year==year)]
   if (haircut != 0){
     restructure <- c(1)
@@ -392,9 +512,14 @@ country.data <- function(country, year, dataset, haircut, fx){
   haircut2 <- haircut^2
   haircut3 <- haircut^3
   debt <- dataset$debt[which(dataset$country==country & dataset$year==year)]
-  fxhaircut <- haircut * fx
+  fxrate <- dataset$fxrate[which(dataset$country==country & dataset$year==year)]
+  institutions2 <- dataset$institutions2[which(dataset$country==country & dataset$year==year)]
+  if (is.na(institutions2)){
+    institutions2 = 0
+  }
+  fxhaircut <- haircut * fxregime
   
-  dataset = data.frame(lag1.growth, lag2.growth, pop, hc, log.gdp, log.capital, productivity, cpi, restructure, haircut, haircut2, haircut3, debt, fx, fxhaircut)
+  dataset = data.frame(lag1.growth, lag2.growth, workshare, hc, log.gdp, log.capital, cpi, restructure, haircut, haircut2, haircut3, debt, fxregime, fxrate, institutions2, fxhaircut)
   return(dataset)
 }
 
@@ -415,32 +540,6 @@ for (country in countries){
   }
 }
 
-
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Haircut Non-linearities
-#------------------------------------------------------------------------------------------------------------------------------------------
-
-hnl1 <- ggplot(data = dataset[which(dataset$restructure==1),])
-hnl1 <- hnl1 + geom_point(aes(x=haircut, y = growth, size = gdp))
-hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2), aes(x= haircut, y = growth, colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
-hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(x= haircut, y = growth, colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
-hnl1 <- hnl1 + scale_size(range = c(3, 13))
-hnl1 <- hnl1 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
-hnl1 <- hnl1 + scale_fill_manual(name="Polynomial Fit")
-hnl1 <- hnl1 + scale_size_manual(name="Real GDP", labels = c("tiny economy (~3"))
-hnl1
-ggsave(file="haircut-growth-nonlinearities.png", plot = hnl1, width = 40, height = 20, units = "cm", dpi = 500)
-
-
-
-hnl2 <- ggplot(data = dataset[which(dataset$restructure==1 & dataset$gdp > 250000),])
-hnl2 <- hnl2 + geom_point(aes(x=haircut, y = growth, size = gdp))
-hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2), aes(x= haircut, y = growth, colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
-hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(x= haircut, y = growth, colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
-hnl2 <- hnl2 + scale_size(range = c(3, 13))
-hnl2
-ggsave(file="haircut-growth-nonlinearities-highGDP.png", plot = hnl2, width = 40, height = 20, units = "cm", dpi = 500)
 
 
 
