@@ -416,3 +416,32 @@ for (country in countries){
 }
 
 
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Haircut Non-linearities
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+hnl1 <- ggplot(data = dataset[which(dataset$restructure==1),])
+hnl1 <- hnl1 + geom_point(aes(x=haircut, y = growth, size = gdp))
+hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2), aes(x= haircut, y = growth, colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(x= haircut, y = growth, colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+hnl1 <- hnl1 + scale_size(range = c(3, 13))
+hnl1 <- hnl1 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+hnl1 <- hnl1 + scale_fill_manual(name="Polynomial Fit")
+hnl1 <- hnl1 + scale_size_manual(name="Real GDP", labels = c("tiny economy (~3"))
+hnl1
+ggsave(file="haircut-growth-nonlinearities.png", plot = hnl1, width = 40, height = 20, units = "cm", dpi = 500)
+
+
+
+hnl2 <- ggplot(data = dataset[which(dataset$restructure==1 & dataset$gdp > 250000),])
+hnl2 <- hnl2 + geom_point(aes(x=haircut, y = growth, size = gdp))
+hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2), aes(x= haircut, y = growth, colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(x= haircut, y = growth, colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+hnl2 <- hnl2 + scale_size(range = c(3, 13))
+hnl2
+ggsave(file="haircut-growth-nonlinearities-highGDP.png", plot = hnl2, width = 40, height = 20, units = "cm", dpi = 500)
+
+
+
+
