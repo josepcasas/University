@@ -222,6 +222,7 @@ plot.counterfactual <- function(dataset, country, year){
 
   }
   p <- p + scale_fill_manual(name="FX Regime",values=colours, labels = legendText)
+  p <- p + scale_x_continuous(breaks = 2005:(year+5))
   ggsave(file=paste(country,"-",year,".png", sep = ""), width = 40, height = 20, units = "cm", dpi = 500)
   p
 }
@@ -404,7 +405,7 @@ country.data <- function(country, year, dataset, haircut, fx){
 
 
 countries <- c("GRC", "IRL", "ITA", "PRT", "ESP")
-years <- c(2009)
+years <- c(2010)
 
 
 for (country in countries){
