@@ -231,7 +231,7 @@ final9 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gd
 final9r <- coeftest(final9, vcov.=vcovHC(final9))
 final9r
 
-final10 <- plm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + fxrate + bankcrisis + default + institutions2 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
+final10 <- plm(growth ~ lag(growth) + lag(growth, k=2) + pop + workshare1 + hc + log(gdp) + capital + cpi + restructure + haircut + I(haircut^2) + I(haircut^3) + debt + fxregime + bankcrisis + default + institutions2 + haircut * fxregime, data=dataset, index=c("code.v2", "year"),  model="within", methods="arellano")
 final10r <- coeftest(final10, vcov.=vcovHC(final10))
 final10r
 
@@ -241,8 +241,6 @@ final10r
 
 stargazer(final1, final2, final3, final4, final4b, final5, final6, final7, final8, final9, final10, title="Dynamic + FE Results", align=TRUE, type="text")
 stargazer(final1r, final2r, final3r, final4r, final4br, final5r, final6r, final7r, final8r, final8br, final8cr, final9r, final10r, title="Dynamic + FE Results", align=TRUE, type="text")
-
-
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -281,6 +279,12 @@ hnl2 <- hnl2 + scale_size(range = c(3, 13))
 hnl2
 ggsave(file="haircut-growth-nonlinearities-highGDP.png", plot = hnl2, width = 40, height = 20, units = "cm", dpi = 500)
 
+
+res1 <- lm(growth ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + debt + fxregime + fxrate + bankcrisis + default + institutions2 + haircut * fxregime, data=dataset[which(dataset$restructure == 1),])
+
+res2 <- lm(haircut ~ lag(growth) + lag(growth, k=2) + workshare1 + hc + log(gdp) + log(capital) + cpi + debt + fxregime + fxrate + bankcrisis + default + institutions2 + haircut * fxregime, data=dataset[which(dataset$restructure == 1),])
+
+plot(res2$residuals, res1$residuals)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Counterfactuals

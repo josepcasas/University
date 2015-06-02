@@ -205,7 +205,7 @@ dataset <- merge(dataset, cpi.v2, by=c("country", "year"), all=TRUE)
 # Some extra variables added.
 # Includes: banking crisis, default total, populatiom, workshare1, workshare2
 extra <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/extra.csv")
-extra <- extra[,c(1, 5, 10, 12, 14, 15, 17, 18)]
+extra <- extra[,c(4, 5, 10, 12, 14, 15, 17, 18)]
 names(extra) <- c("country", "year","restructure2", "haircut2", "bankcrisis", "default", "workshare1", "workshare2")
 
 dataset <- merge(dataset, extra, by=c("country", "year"), all=TRUE)
@@ -223,20 +223,14 @@ dataset <- merge(dataset, institutions, by=c("country", "year"), all=TRUE)
 
 
 #--------------------------------------------------------------------------------------
-# FX rate
-
-fxrate <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/fxrate.csv")
-names(fxrate) <- c("variable", "country", "year", "fxrate")
-fxrate <- fxrate[,2:4]
-dataset <- merge(dataset, fxrate, by=c("country", "year"), all = TRUE)
-
-
-#--------------------------------------------------------------------------------------
 # Income groups
 groups <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/groups.csv")
-groups <- groups[,c(1,2,6)]
+groups <- groups[,c(5,2,6)]
 names(groups)<-c("country", "group", "year")
 dataset <- merge(dataset, groups, by=c("country", "year"), all = TRUE)
+
+
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Cleanup
@@ -247,7 +241,7 @@ dataset <- dataset[c("country.name", "country", "code", "year", "date", "group",
 
 
 # limit observations to years >= 1970
-dataset <- dataset[which(dataset$year>=1970),]
+dataset <- dataset[which(dataset$year>=1950),]
 dataset <- dataset[which(dataset$year<2012),]
 
 
