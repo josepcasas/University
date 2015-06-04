@@ -25,7 +25,7 @@ classdef Country
                 ,optprice(obj.Gamma, obj.C, obj.Mu, obj.Sigma));
         end 
         function r = haircut2(obj)
-            r = haircut2(obj.Ghigh, obj.Glow, obj.Gamma, obj.Mu, obj.Sigma);
+            r = haircut2(obj.Ghigh, obj.Glow, obj.Gamma, obj.Mu, obj.sigma);
         end
     end
 end

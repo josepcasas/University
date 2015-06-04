@@ -1,0 +1,13 @@
+function p = haircut2(ghigh, glow, gamma, mu, sigma)
+
+z1 = (log(1+glow) - mu) ./ sigma;
+z2 = (log(1+ghigh) - mu) ./ sigma;
+
+
+p =  exp(mu + (1./2) .* (1 - 2 .* gamma) .* sigma.^2) ./ ...
+    (ghigh - glow) .* (normcdf(z2 + (gamma-1).*sigma) ...
+    - normcdf(z1 + (gamma-1).*sigma)) ...
+    - (1 + glow) ./ (ghigh - glow) .* ( normcdf(z2-gamma.*sigma) - ...
+    normcdf(z1 + gamma.*sigma)) + (1 - normcdf(z2 + gamma.*sigma));
+
+end

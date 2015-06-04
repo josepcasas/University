@@ -15,7 +15,8 @@ library(gtools)
 #Load alternative dataset
 dataset <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/dataset-v2.csv")
 names(dataset) <- c("wb", "group", "country.name","ifs", "country", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
-
+dataset <- dataset[which(dataset$year >= 1970),]
+dataset <- dataset[which(dataset$group=="OECD" | dataset$group=="HI" | dataset$group=="UMI"),]
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # A note on robust standard errors in R
@@ -118,7 +119,8 @@ fe10 <- plm(growth ~ log(pop) + workshare1 + log(hc) + log(gdp) + diff(log(capit
 fe10r <- coeftest(fe10, vcov.=vcovHC(fe10))
 fe10r
 
-stargazer(fe1r, fe2r, fe3r, fe4r, fe5r, fe6r, fe7r, fe8r, fe9r, align=TRUE, type = "text")
+stargazer(fe1, fe2, fe3, fe4, fe5, fe6, fe7, fe8, fe9, fe10, align=TRUE)
+stargazer(fe1r, fe2r, fe3r, fe4r, fe5r, fe6r, fe7r, fe8r, fe9r, fe10r, align=TRUE)
 
 
 
@@ -166,8 +168,9 @@ dyn10 <- plm(growth ~ lag(growth) + lag(growth, k=2) + log(pop) + workshare1 + l
 dyn10r <- coeftest(dyn10, vcov.=vcovHC(dyn10))
 dyn10r
 
-stargazer(dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7, dyn8, dyn9, align=TRUE)
-stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, dyn9r, align=TRUE, type = "text")
+stargazer(dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7, dyn8, dyn9, dyn10, align=TRUE)
+stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, dyn9r, dyn10r, align=TRUE)
+
 
 
 
@@ -178,7 +181,7 @@ stargazer(dyn1r, dyn2r, dyn3r, dyn4r, dyn5r, dyn6r, dyn7r, dyn8r, dyn9r, align=T
 
 # Only >1970 data
 dataset <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/dataset-v2.csv")
-names(dataset) <- c("wb", "group", "ifs", "country", "country.name", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
+names(dataset) <- c("wb", "group", "country.name","ifs", "country", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
 dataset <- dataset[which(dataset$year >= 1970),]
 
 par6rob1 <- plm(growth ~ diff(log(capital)) + log(hc) + workshare1 + cpi20 + haircut + I(haircut^2) + institutions2 + default + bankcrisis, data = dataset, index=c("country", "year"),  model="within", effect = "individual")
@@ -196,7 +199,7 @@ dyn10rob1r
 
 # OECD + HI + UMI
 dataset <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/dataset-v2.csv")
-names(dataset) <- c("wb", "group", "ifs", "country", "country.name", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
+names(dataset) <- c("wb", "group", "country.name","ifs", "country", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
 dataset <- dataset[which(dataset$group=="OECD" | dataset$group=="HI" | dataset$group=="UMI"),]
 
 par6rob2 <- plm(growth ~ diff(log(capital)) + log(hc) + workshare1 + cpi20 + haircut + I(haircut^2) + institutions2 + default + bankcrisis, data = dataset, index=c("country", "year"),  model="within", effect = "individual")
@@ -214,7 +217,7 @@ dyn10rob2r
 
 # OECD + HI + UMI & Only >1970 data
 dataset <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/dataset-v2.csv")
-names(dataset) <- c("wb", "group", "ifs", "country", "country.name", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
+names(dataset) <- c("wb", "group", "country.name","ifs", "country", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
 dataset <- dataset[which(dataset$year >= 1970),]
 dataset <- dataset[which(dataset$group=="OECD" | dataset$group=="HI" | dataset$group=="UMI"),]
 
@@ -232,10 +235,14 @@ dyn10rob3r
 
 # set dataset back to normal
 dataset <- read.csv("~/Documents/bgse/bgse-code/Independent Study Project/data/dataset-v2.csv")
-names(dataset) <- c("wb", "group", "ifs", "country", "country.name", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
+names(dataset) <- c("wb", "group", "country.name","ifs", "country", "year", "hc", "gdp", "capital", "haircut3", "haircut4", "debtres", "restructure", "restructure2", "haircut", "haircut2", "bankcrisis", "default", "pop", "workshare1", "workshare2", "institutions1", "institutions2","fxregime", "fxregime2", "log.capital", "log.hc", "log.workshare1", "growth", "cpi", "cpi20", "cpi40", "haircutsq", "haircutcube", "haircut2sq")
 
 stargazer(par6, fe10, dyn10, par6rob1, fe10rob2, dyn10rob1, par6rob2, fe10rob2, dyn10rob2, par6rob3, fe10rob3, dyn10rob3, align=TRUE)
 stargazer(par6r, fe10r, dyn10r, par6rob1r, fe10rob2r, dyn10rob1r, par6rob2r, fe10rob2r, dyn10rob2r, par6rob3r, fe10rob3r, dyn10rob3r, align=TRUE, type = "text")
+
+
+stargazer(fe10, dyn10, fe10rob2, dyn10rob1, fe10rob2, dyn10rob2, fe10rob3, dyn10rob3, align=TRUE)
+stargazer(fe10r, dyn10r, fe10rob2r, dyn10rob1r, fe10rob2r, dyn10rob2r, fe10rob3r, dyn10rob3r, align=TRUE)
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -269,6 +276,119 @@ ggsave(file="haircut-growth-nonlinearities-high-income.png", plot = hnl2, width 
 
 
 
+plot.compound <- function(dataset, min, max){
+  
+  # compound interest
+  result <- c()
+  for (country in unique(dataset$country)){
+    aux <- dataset[which(dataset$country == country),]
+    compound <- c()
+    for (el in (max+1):length(aux$wb)){
+      compound <- c(compound, (aux$gdp[el+max]/aux$gdp[el+min])^(1/max) - 1)
+    }
+    compound <- c(compound,  rep(NA,max))
+    result <- c(result, compound)
+  }
+  dataset$compound <- result
+  
+  # compound interest plot for high income countries
+  hnl3 <- ggplot(data = dataset[which(dataset$restructure==1 & (dataset$group=="OECD" | dataset$group=="HI" | dataset$group=="UMI")),], aes(haircut, compound, label = country))
+  hnl3 <- hnl3 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+  hnl3 <- hnl3 + stat_smooth(method = "lm", formula = y ~ x + I(x^2),  aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+  hnl3 <- hnl3 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+  hnl3 <- hnl3 + scale_size(range = c(3, 13))
+  hnl3 <- hnl3 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+  hnl3 <- hnl3 + scale_fill_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl3 <- hnl3 + scale_colour_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl3
+  ggsave(file=paste0("haircut-compound-nonlinearities-",min,"-",max,".png"), plot = hnl3, width = 40, height = 20, units = "cm", dpi = 500)
+  
+  
+  # compound interest plot for high income countries
+  hnl4 <- ggplot(data = dataset[which(dataset$restructure==1),], aes(haircut, compound, label = country))
+  hnl4 <- hnl4 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+  hnl4 <- hnl4 + stat_smooth(method = "lm", formula = y ~ x + I(x^2),  aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+  hnl4 <- hnl4 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+  hnl4 <- hnl4 + scale_size(range = c(3, 13))
+  hnl4 <- hnl4 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+  hnl4 <- hnl4 + scale_fill_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl4 <- hnl4 + scale_colour_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl4
+  ggsave(file=paste0("haircut-compound-nonlinearities-high-income-",min,"-",max,".png"), plot = hnl4, width = 40, height = 20, units = "cm", dpi = 500)
+}
+
+max = 5
+for (min in 0:max){
+  print(min)
+  for (max in min:max){
+    print(max)
+    plot.compound(dataset,min,max)
+  }
+}
+
+
+
+#calculates the lead of variable growth in dataset
+lead <- function(dataset, t){
+  result <- c()
+  for (country in unique(dataset$country)){
+    aux <- dataset[which(dataset$country == country),]
+    lead <- c()
+    for (el in (t):length(aux$wb)){
+      lead <- c(lead, dataset$growth[el+t])
+    }
+    lead <- c(lead,  rep(NA,t-1))
+    result <- c(result, lead)
+  }
+  print(a)
+  return(result)
+}
+
+
+plot.hc.evol <- function(dataset,t){
+  
+  if (t != 0){
+    dataset$lead <- lead(dataset, t)
+  }
+  else{
+    dataset$lead <- dataset$growth
+  }
+  
+  
+  #including all observations
+  hnl1 <- ggplot(data = dataset[which(dataset$restructure==1 & dataset$country != "LBR"),], aes(haircut, lead, label = country)) 
+  hnl1 <- hnl1 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+  hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2),  aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+  hnl1 <- hnl1 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+  hnl1 <- hnl1 + scale_size(range = c(3, 13))
+  hnl1 <- hnl1 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+  hnl1 <- hnl1 + scale_fill_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl1 <- hnl1 + scale_colour_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl1
+  ggsave(file=paste0("haircut-growth-nonlinearities-video-",t,".png"), plot = hnl1, width = 40, height = 20, units = "cm", dpi = 500)
+  
+  #only high income countries
+  hnl2 <- ggplot(data = dataset[which(dataset$restructure==1 & (dataset$group=="OECD" | dataset$group=="HI" | dataset$group=="UMI") & dataset$country != "LBR" ),], aes(haircut, lead, label = country))
+  hnl2 <- hnl2 + geom_point(aes(size = gdp)) + geom_text(hjust=1.2, vjust=1.2)
+  hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2),  aes(colour = "Quadratic Polynomial", fill = "Quadratic Polynomial"))
+  hnl2 <- hnl2 + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), aes(colour = "Cubic Polynomial", fill =  "Cubic Polynomial"))
+  hnl2 <- hnl2 + scale_size(range = c(3, 13))
+  hnl2 <- hnl2 + labs(title = "Real GDP growth vs. Haircut", y = "Real GDP growth rate (%)", x = "Haircut size (%)")
+  hnl2 <- hnl2 + scale_fill_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl2 <- hnl2 + scale_colour_manual(name="Polynomial Fit", label = c("Cubic Polynomial", "Quadratic Polynomial"), values = c("#FF9999", "#56B4E9"))
+  hnl2
+  ggsave(file=paste0("haircut-growth-nonlinearities-high-income-video-",t,".png"), plot = hnl2, width = 40, height = 20, units = "cm", dpi = 500)
+  
+  
+}
+  
+for (t in 0:5){
+  plot.hc.evol(dataset,t)
+}
+
+
+
+
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Counterfactual functions
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -287,7 +407,7 @@ gdp <- counterfactual(country, year, dataset)
   country.gdp$gdp2 <- country.gdp$gdp/norm
   
   colours <- c("orange", "palegreen3")  
-  fxs = c(1,6)
+  fxs = c(1,5)
   legendText = c("Flexible FX regime (1)", "Rigid FX regime (6)")
   cols <- c("Flexible FX regime (1)"="orange","Rigid FX regime (6)"="palegreen3")
   
@@ -342,7 +462,7 @@ counterfactual <- function(country, year, dataset){
   
   # define some aux list
   years <- year:(year+5)
-  haircuts <- seq(0, 1, by=.05)
+  haircuts <- seq(0, 0.7, by=.05)
   fxs <- seq(1,6, by=1)
   
   # loop through the five regressions
@@ -506,6 +626,7 @@ for (country in countries){
 
 
 
+stargazer(gt0r, gt1r, gt2r, gt3r, gt4r, align=TRUE, type = "text")
 
 
 
